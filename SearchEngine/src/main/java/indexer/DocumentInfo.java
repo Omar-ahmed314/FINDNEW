@@ -58,5 +58,16 @@ public class DocumentInfo {
             occurences.replace(tagName, numberOfOcc); 
         else
             occurences.put(tagName, numberOfOcc); 
-    }  
+    }
+    
+    public void printInfo(){
+        System.out.println(URL);
+        System.out.println(TF);
+        System.out.println(occurences);
+    }
+    
+    
+    
+  
+    
 }
