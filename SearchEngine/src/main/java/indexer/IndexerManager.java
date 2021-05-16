@@ -7,6 +7,7 @@ package indexer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Map;
 import java.util.Scanner;
 
 
@@ -35,9 +36,14 @@ public class IndexerManager {
         
         return URL ; 
     }  
+    public Map<String, Integer> getPageContent(String URL){
+        ContentExtractor extractor=new ContentExtractor(); 
+        return extractor.getPageWords(URL);
+    }
     public static void main(String args[]){
         IndexerManager manager = new IndexerManager(); 
         String URL = manager.readURL(); 
+        Map<String,Integer> wordOccurences= manager.getPageContent(URL); 
     
     
     }
