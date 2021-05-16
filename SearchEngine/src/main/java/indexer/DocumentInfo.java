@@ -58,10 +58,5 @@ public class DocumentInfo {
             occurences.replace(tagName, numberOfOcc); 
         else
             occurences.put(tagName, numberOfOcc); 
-    }
-    
-    
-    
-  
-    
+    }  
 }

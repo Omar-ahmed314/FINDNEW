@@ -62,15 +62,19 @@ public class IndexerManager {
     }
     public static void main(String args[]){
         
-            IndexerManager manager = new IndexerManager();
-            String URL = manager.readURL();
-            try {
-                Map<String,Integer> wordOccurences= manager.getPageTextContent(manager.getPageSource(URL));
-                System.out.println(wordOccurences);
-             } 
-             catch (IOException ex) {
-                   System.out.println("Error While Reading the source of the Page");
-             }
+        IndexerManager manager = new IndexerManager();
+        String URL = manager.readURL();
+        Map<String,Integer> wordOccurences;
+        try {
+            wordOccurences= manager.getPageTextContent(manager.getPageSource(URL));
+
+        }catch (IOException ex) {
+               System.out.println("Error While Reading the source of the Page");
+        }
+        
+        
+        
+        
     
     
     }
