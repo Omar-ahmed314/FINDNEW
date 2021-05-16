@@ -5,10 +5,17 @@
  */
 package indexer;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -36,14 +43,34 @@ public class IndexerManager {
         
         return URL ; 
     }  
-    public Map<String, Integer> getPageContent(String URL){
+    public Map<String, Integer> getPageTextContent(String  source){
         ContentExtractor extractor=new ContentExtractor(); 
-        return extractor.getPageWords(URL);
+        return extractor.getPageWords(source);
+    }
+    
+    public String getPageSource(String URL) throws MalformedURLException, IOException{
+        URL page = new URL(URL);
+        BufferedReader in = new BufferedReader(
+        new InputStreamReader(page.openStream()));
+
+        String inputLine, source=""; 
+        while ((inputLine = in.readLine()) != null)
+        {   source+=inputLine;
+            source+="\n"; 
+        }
+        return source ; 
     }
     public static void main(String args[]){
-        IndexerManager manager = new IndexerManager(); 
-        String URL = manager.readURL(); 
-        Map<String,Integer> wordOccurences= manager.getPageContent(URL); 
+        
+            IndexerManager manager = new IndexerManager();
+            String URL = manager.readURL();
+            try {
+                Map<String,Integer> wordOccurences= manager.getPageTextContent(manager.getPageSource(URL));
+                System.out.println(wordOccurences);
+             } 
+             catch (IOException ex) {
+                   System.out.println("Error While Reading the source of the Page");
+             }
     
     
     }
