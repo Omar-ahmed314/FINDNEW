@@ -7,7 +7,9 @@ package indexer;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
 import org.jsoup.Jsoup;
@@ -23,11 +25,11 @@ import org.jsoup.Jsoup;
 
 public class ContentExtractor {
     
-    Set<String> getPageWords(String source){
+    Map<String,Integer> getPageWords(String source){
       
         String text2 = Jsoup.parse(source).text();
         String [] words= text2.split(" "); 
-        Set<String> elements = new HashSet<String>(); 
+        Map<String,Integer> elements = new HashMap<String,Integer>(); 
         for(String a : words){
             try{
                 int i = Integer.parseInt(a.trim()); 
@@ -35,7 +37,13 @@ public class ContentExtractor {
                 // if the execption happens then it is not a number 
                 // if no exception happens so it is a number and will not be added in the set 
             }catch(NumberFormatException e ){
-                elements.add(a); 
+                if(elements.containsKey(a)){
+                    Integer j = elements.get(a); 
+                    j++; 
+                    elements.replace(a, j); 
+                }
+                else
+                    elements.put(a, 1) ; 
             }
         }
 
@@ -53,7 +61,7 @@ public class ContentExtractor {
          }
        
         for(String a : stopingList){
-            if(elements.contains(a)){
+            if(elements.containsKey(a)){
                 elements.remove(a); 
             }
         }
