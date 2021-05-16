@@ -23,20 +23,26 @@ import org.jsoup.select.Elements;
 // of the tags 
 public class TagsTextExtractor {
     
-    Map<String, Set<String>> getTagsContext(String source ){
+    Map<String, Map<String,Integer>> getTagsContext(String source ){
         Document doc = Jsoup.parse(source);
         Elements ptags = doc.select("p");
-        Map<String ,Set<String>> pmap= new HashMap<>(); 
-        Set<String> unique_words =new HashSet<>(); 
+        Map<String ,Map<String, Integer>> pmap= new HashMap<>(); 
+        Map<String,Integer> unique_words =new HashMap<>(); 
         for(int i = 0 ; i<ptags.size();i++){
             String text = ptags.get(i).text();
             String[] words=text.split(" "); 
             for(String a : words){
-                unique_words.add(a); 
+                if(unique_words.containsKey(a)){
+                    Integer j = unique_words.get(a); 
+                    j++; 
+                    unique_words.replace(a, j); 
+                }
+                else
+                    unique_words.put(a, 1); 
             }
             // TO-DO we should remove the Stoping words and nubmers from words added to the set
             // we should genralize the concept over the whole tags  that can contain text 
-            // 
+            // we should add number of occurneces per word in per tag name 
              
         }
         pmap.put("p", unique_words);
