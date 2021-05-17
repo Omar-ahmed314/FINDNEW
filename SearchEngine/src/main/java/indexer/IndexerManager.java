@@ -90,6 +90,10 @@ public class IndexerManager {
         }
         
     }
+    public void buildDatabase(String URL){
+        UpdatingDatabase(URL, "p");
+        UpdatingDatabase(URL, "a");
+    }
     
     
     public String getPageSource(String URL) throws MalformedURLException, IOException{
@@ -119,11 +123,7 @@ public class IndexerManager {
         }
         manager.tagsContent=manager.getTagsContent(source); 
         
-        
-        
-        
-    
-    
+     
     }
     
 }
