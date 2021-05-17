@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
@@ -31,18 +32,18 @@ public class IndexerManager {
     }
     
      
-    public String readURL(){
-        String URL="" ; 
+    public Set<String> readURL(){
+        Set <String>URLs= new HashSet<>(); 
         File myObj = new File("ClawerURLs.txt");
         try (Scanner myReader = new Scanner(myObj)) {
-            if (myReader.hasNextLine()) {
-                 URL= myReader.nextLine();
+            while(myReader.hasNextLine()) {
+                 URLs.add(myReader.nextLine());
             }
         }   catch (FileNotFoundException ex) {
                 System.out.println("Error while Reading the file");
         }  
         
-        return URL ; 
+        return URLs ; 
     }  
     public Map<String, Integer> getPageTextContent(String  source){
         ContentExtractor extractor=new ContentExtractor(); 
@@ -124,33 +125,22 @@ public class IndexerManager {
     public static void main(String args[]){
         
         IndexerManager manager = new IndexerManager();
-        String URL = manager.readURL();
-       
-        String source ="";
-        try {
-            source=manager.getPageSource(URL); 
-            manager.wordOccurences= manager.getPageTextContent(source);
+        Set<String> URLs = manager.readURL();
+        for(String a : URLs){
+            String source ="";
+            try {
+                source=manager.getPageSource(a); 
+                manager.wordOccurences= manager.getPageTextContent(source);
 
-        }catch (IOException ex) {
-               System.out.println("Error While Reading the source of the Page");
+            }catch (IOException ex) {
+                   System.out.println("Error While Reading the source of the Page");
+            }
+            manager.tagsContent=manager.getTagsContent(source); 
+            System.out.println(manager.tagsContent);
+            manager.buildDatabase(a);
         }
-        manager.tagsContent=manager.getTagsContent(source); 
-        System.out.println(manager.tagsContent);
-        manager.buildDatabase(URL);
-        URL="https://www.reliablesoft.net/h1-tag/"; 
-        source ="";
-        try {
-            source=manager.getPageSource(URL); 
-            manager.wordOccurences= manager.getPageTextContent(source);
-
-        }catch (IOException ex) {
-               System.out.println("Error While Reading the source of the Page");
-        }
-        manager.tagsContent=manager.getTagsContent(source); 
-        System.out.println(manager.tagsContent);
-        manager.buildDatabase(URL);
         
-         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("Privacy")){
+        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
             a.printInfo();
         }
         
