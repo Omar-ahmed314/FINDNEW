@@ -27,6 +27,10 @@ public class ContentExtractor {
         String [] words= text2.split(" "); 
         Map<String,Integer> elements = new HashMap<String,Integer>(); 
         for(String a : words){
+            a=a.replaceAll("[^a-zA-Z0-9]","" ); 
+            a=a.toLowerCase(); 
+            if(a.isEmpty())
+                continue;
             try{
                 int i = Integer.parseInt(a.trim()); 
                 // removing the numbers from the set 
@@ -62,5 +66,8 @@ public class ContentExtractor {
             }
         }
         return  elements ; 
-     }
+    }
+    
+   
+    
 }
