@@ -91,9 +91,22 @@ public class IndexerManager {
         
     }
     public void buildDatabase(String URL){
-        UpdatingDatabase(URL, "p");
-        UpdatingDatabase(URL, "a");
-    }
+       for(int i = 1 ; i<=6; i++){
+             UpdatingDatabase(URL, "h"+i);
+         }
+         UpdatingDatabase(URL, "a");
+         UpdatingDatabase(URL, "p");
+         UpdatingDatabase(URL, "li");
+         UpdatingDatabase(URL, "title");
+         UpdatingDatabase(URL, "meta");
+         UpdatingDatabase(URL, "div");
+         UpdatingDatabase(URL, "ol");
+         UpdatingDatabase(URL, "dt");
+         UpdatingDatabase(URL, "dl");
+         UpdatingDatabase(URL, "label");
+         UpdatingDatabase(URL, "button");
+        
+ }
     
     
     public String getPageSource(String URL) throws MalformedURLException, IOException{
@@ -137,7 +150,7 @@ public class IndexerManager {
         System.out.println(manager.tagsContent);
         manager.buildDatabase(URL);
         
-         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
+         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("Important")){
             a.printInfo();
         }
         
