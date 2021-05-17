@@ -47,6 +47,10 @@ public class IndexerManager {
         ContentExtractor extractor=new ContentExtractor(); 
         return extractor.getPageWords(source);
     }
+    public Map<String ,Map<String, Integer>>  getTagsContent(String source ){
+        TagsTextExtractor tagsTextExtractor= new TagsTextExtractor(); 
+        return tagsTextExtractor.getAllTagsText(source); 
+    }
     
     public String getPageSource(String URL) throws MalformedURLException, IOException{
         URL page = new URL(URL);
@@ -65,12 +69,15 @@ public class IndexerManager {
         IndexerManager manager = new IndexerManager();
         String URL = manager.readURL();
         Map<String,Integer> wordOccurences;
+        String source ="";
         try {
-            wordOccurences= manager.getPageTextContent(manager.getPageSource(URL));
+            source=manager.getPageSource(URL); 
+            wordOccurences= manager.getPageTextContent(source);
 
         }catch (IOException ex) {
                System.out.println("Error While Reading the source of the Page");
         }
+        Map<String ,Map<String, Integer>> tagsContent=manager.getTagsContent(source); 
         
         
         
