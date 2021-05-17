@@ -1,0 +1,6 @@
+indexer/PageDownloader.class
+indexer/IndexerManager.class
+indexer/DocumentInfo.class
+indexer/TagsTextExtractor.class
+indexer/ContentExtractor.class
+indexer/IndexerDatabase.class
