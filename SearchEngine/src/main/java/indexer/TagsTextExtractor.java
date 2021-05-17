@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author thebrownboy
  */
 package indexer;
 
@@ -12,10 +11,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-/**
- *
- * @author thebrownboy
- */
 
 // this class will return a map , keys will be the HTML tags names values will be the words of the text
 // of the tags 

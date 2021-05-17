@@ -1,7 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ *
+ * @author thebrownboy
  */
 package indexer;
 
@@ -14,8 +13,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -24,6 +21,9 @@ import java.util.logging.Logger;
  */
 public class IndexerManager {
     private IndexerDatabase mainDatabase ; 
+    Map<String ,Map<String, Integer>> tagsContent;
+     
+    Map<String,Integer> wordOccurences;
 
     public IndexerManager() {
         mainDatabase= new IndexerDatabase(); 
@@ -51,6 +51,20 @@ public class IndexerManager {
         TagsTextExtractor tagsTextExtractor= new TagsTextExtractor(); 
         return tagsTextExtractor.getAllTagsText(source); 
     }
+    void UpdatingDatabase(String URL,String tagName){
+        Map<String,Integer> pTagMap=tagsContent.get(tagName); 
+        for (Map.Entry<String,Integer> entry : pTagMap.entrySet()){
+            if(wordOccurences.containsKey(entry.getKey())){// Iam sure that it will be true forever  bc any word that is in p it will definetly be in wordOccurences
+                DocumentInfo doc=new DocumentInfo(URL);
+                doc.setTF(wordOccurences.get(entry.getKey()));
+                doc.setOccurence("p",entry.getValue());
+                mainDatabase.addDocument(entry.getKey(), doc);
+                
+            }
+        }
+        
+    }
+    
     
     public String getPageSource(String URL) throws MalformedURLException, IOException{
         URL page = new URL(URL);
@@ -68,16 +82,16 @@ public class IndexerManager {
         
         IndexerManager manager = new IndexerManager();
         String URL = manager.readURL();
-        Map<String,Integer> wordOccurences;
+       
         String source ="";
         try {
             source=manager.getPageSource(URL); 
-            wordOccurences= manager.getPageTextContent(source);
+            manager.wordOccurences= manager.getPageTextContent(source);
 
         }catch (IOException ex) {
                System.out.println("Error While Reading the source of the Page");
         }
-        Map<String ,Map<String, Integer>> tagsContent=manager.getTagsContent(source); 
+        manager.tagsContent=manager.getTagsContent(source); 
         
         
         
