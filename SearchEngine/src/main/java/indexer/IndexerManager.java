@@ -83,7 +83,7 @@ public class IndexerManager {
                 doc.setTF(wordOccurences.get(entry.getKey()));
                 doc.setOccurence(tagName,entry.getValue());
                 mainDatabase.addDocument(entry.getKey(), doc);
-                return ; 
+                
                 // suppose that there is a word in h1 and p how can your data base act 
                 
             }
@@ -122,7 +122,10 @@ public class IndexerManager {
                System.out.println("Error While Reading the source of the Page");
         }
         manager.tagsContent=manager.getTagsContent(source); 
-        
+        manager.buildDatabase(URL);
+        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
+            a.printInfo();
+        }
      
     }
     
