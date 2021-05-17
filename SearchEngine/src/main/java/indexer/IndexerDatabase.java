@@ -41,6 +41,12 @@ public class IndexerDatabase {
         }
         return null ; 
     }
+    boolean containsWord(String word){
+        if(indexerMap.containsKey(word)){
+            return true ; 
+        }
+        return  false ; 
+    }
     
     /*TO-DO we should give every Document a specific id or identifer to be able to handle it */
     
