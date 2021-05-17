@@ -31,6 +31,8 @@ public class TagsTextExtractor {
             String text = ptags.get(i).text();
             String[] words=text.split(" "); 
             for(String a : words){
+                a=a.replaceAll("[^a-zA-Z0-9]", ""); 
+                a=a.toLowerCase(); 
                 if(unique_words.containsKey(a)){
                     Integer j = unique_words.get(a); 
                     j++; 
@@ -40,8 +42,8 @@ public class TagsTextExtractor {
                     unique_words.put(a, 1); 
             }
             // TO-DO we should remove the Stoping words and nubmers from words added to the set
-            // we should genralize the concept over the whole tags  that can contain text 
-            // we should add number of occurneces per word in per tag name 
+            // we should genralize the concept over the whole tags  that can contain text  done 
+            // we should add number of occurneces per word in per tag name  done 
              
         }
         pmap.put(tagName, unique_words);

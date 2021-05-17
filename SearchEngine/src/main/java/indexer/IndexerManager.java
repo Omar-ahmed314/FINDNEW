@@ -140,7 +140,7 @@ public class IndexerManager {
             manager.buildDatabase(a);
         }
         
-        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
+        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("seo")){
             a.printInfo();
         }
         
