@@ -33,6 +33,8 @@ public class TagsTextExtractor {
             for(String a : words){
                 a=a.replaceAll("[^a-zA-Z0-9]", ""); 
                 a=a.toLowerCase(); 
+                //TO-DO for example if you have something like that "python.org" 
+                // if you search by the word python you will not find it cause the word pythonorg which will be put in the indexer not python 
                 if(unique_words.containsKey(a)){
                     Integer j = unique_words.get(a); 
                     j++; 
