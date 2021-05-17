@@ -48,9 +48,24 @@ public class TagsTextExtractor {
         
     } 
      public Map<String ,Map<String, Integer>> getAllTagsText(String source ){
-         
+         for(int i = 1 ; i<=6; i++){
+             getTagtext(source, "h"+i);
+         }
          getTagtext(source, "a");
          getTagtext(source, "p");
+         getTagtext(source, "li");
+         getTagtext(source, "title");
+         getTagtext(source, "meta");
+         getTagtext(source, "div");
+         getTagtext(source, "ol");
+         getTagtext(source, "dt");
+         getTagtext(source, "dl");
+         getTagtext(source, "label");
+         getTagtext(source, "button");
+//         getTagtext(source, "style");
+         
+         
+         
          return pmap ; 
      }
     

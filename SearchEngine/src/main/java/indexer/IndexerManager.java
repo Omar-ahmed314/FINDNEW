@@ -122,11 +122,25 @@ public class IndexerManager {
                System.out.println("Error While Reading the source of the Page");
         }
         manager.tagsContent=manager.getTagsContent(source); 
+        System.out.println(manager.tagsContent);
         manager.buildDatabase(URL);
-        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
+        URL="https://www.reliablesoft.net/h1-tag/"; 
+        source ="";
+        try {
+            source=manager.getPageSource(URL); 
+            manager.wordOccurences= manager.getPageTextContent(source);
+
+        }catch (IOException ex) {
+               System.out.println("Error While Reading the source of the Page");
+        }
+        manager.tagsContent=manager.getTagsContent(source); 
+        System.out.println(manager.tagsContent);
+        manager.buildDatabase(URL);
+        
+         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("SEO")){
             a.printInfo();
         }
-     
+        
     }
     
 }
