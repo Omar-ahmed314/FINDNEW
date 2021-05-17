@@ -98,8 +98,8 @@ public class IndexerManager {
          UpdatingDatabase(URL, "p");
          UpdatingDatabase(URL, "li");
          UpdatingDatabase(URL, "title");
-         UpdatingDatabase(URL, "meta");
-         UpdatingDatabase(URL, "div");
+         //UpdatingDatabase(URL, "meta");
+         //UpdatingDatabase(URL, "div");
          UpdatingDatabase(URL, "ol");
          UpdatingDatabase(URL, "dt");
          UpdatingDatabase(URL, "dl");
@@ -150,7 +150,7 @@ public class IndexerManager {
         System.out.println(manager.tagsContent);
         manager.buildDatabase(URL);
         
-         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("Important")){
+         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("Privacy")){
             a.printInfo();
         }
         

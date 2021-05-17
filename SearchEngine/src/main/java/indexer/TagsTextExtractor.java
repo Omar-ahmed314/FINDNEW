@@ -55,8 +55,8 @@ public class TagsTextExtractor {
          getTagtext(source, "p");
          getTagtext(source, "li");
          getTagtext(source, "title");
-         getTagtext(source, "meta");
-         getTagtext(source, "div");
+         //getTagtext(source, "meta");
+         //getTagtext(source, "div");
          getTagtext(source, "ol");
          getTagtext(source, "dt");
          getTagtext(source, "dl");
