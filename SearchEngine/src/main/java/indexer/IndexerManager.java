@@ -13,6 +13,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 
 /**
@@ -55,10 +56,35 @@ public class IndexerManager {
         Map<String,Integer> pTagMap=tagsContent.get(tagName); 
         for (Map.Entry<String,Integer> entry : pTagMap.entrySet()){
             if(wordOccurences.containsKey(entry.getKey())){// Iam sure that it will be true forever  bc any word that is in p it will definetly be in wordOccurences
+                if(mainDatabase.containsWord(entry.getKey())){//write your comments 
+                    // if your database stored this word before 
+                    // so you have two choices whether to update the doc with the position
+                    // of the occurance or to add a new doc  
+                    Set<DocumentInfo> wordDocs=mainDatabase.getWordSet(entry.getKey()); 
+                    boolean exist= false; 
+                    for(DocumentInfo a : wordDocs){
+                        if(a.getURL().equals(URL)){
+                            // that means that I put this doc by another tag name
+                            a.setOccurence(tagName, entry.getValue());
+                            exist=true; 
+                             
+                        }
+                    }
+                    if(exist)
+                        continue;
+                }
+                // write your comments 
+                // this code will be executed in two senarios 
+                // if the word was not in the database 
+                // ror this doc is newly  related with this word 
+                // the previous code will be executed if and only if 
+                // the doc was related with the word but we have to update the occurence of it 
                 DocumentInfo doc=new DocumentInfo(URL);
                 doc.setTF(wordOccurences.get(entry.getKey()));
-                doc.setOccurence("p",entry.getValue());
+                doc.setOccurence(tagName,entry.getValue());
                 mainDatabase.addDocument(entry.getKey(), doc);
+                return ; 
+                // suppose that there is a word in h1 and p how can your data base act 
                 
             }
         }
@@ -101,4 +127,7 @@ public class IndexerManager {
     }
     
 }
+
+
+
 

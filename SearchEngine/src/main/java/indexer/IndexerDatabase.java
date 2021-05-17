@@ -47,6 +47,7 @@ public class IndexerDatabase {
         }
         return  false ; 
     }
+  
     
     /*TO-DO we should give every Document a specific id or identifer to be able to handle it */
     
