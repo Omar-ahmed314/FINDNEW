@@ -7,9 +7,7 @@ package indexer;
 
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -22,11 +20,17 @@ import org.jsoup.select.Elements;
 // this class will return a map , keys will be the HTML tags names values will be the words of the text
 // of the tags 
 public class TagsTextExtractor {
+    Map<String ,Map<String, Integer>> pmap;
+
+    public TagsTextExtractor() {
+        pmap= new HashMap<>();
+    }
     
-    Map<String, Map<String,Integer>> getTagsContext(String source ){
+    
+    private void getTagtext(String source, String tagName ){
         Document doc = Jsoup.parse(source);
-        Elements ptags = doc.select("p");
-        Map<String ,Map<String, Integer>> pmap= new HashMap<>(); 
+        Elements ptags = doc.select(tagName);
+         
         Map<String,Integer> unique_words =new HashMap<>(); 
         for(int i = 0 ; i<ptags.size();i++){
             String text = ptags.get(i).text();
@@ -45,8 +49,14 @@ public class TagsTextExtractor {
             // we should add number of occurneces per word in per tag name 
              
         }
-        pmap.put("p", unique_words);
-        return pmap ;
+        pmap.put(tagName, unique_words);
+        
     } 
+     public Map<String ,Map<String, Integer>> getAllTagsText(String source ){
+         
+         getTagtext(source, "a");
+         getTagtext(source, "p");
+         return pmap ; 
+     }
     
 }
