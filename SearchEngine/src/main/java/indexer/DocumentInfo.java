@@ -40,7 +40,7 @@ import java.util.Map;
 
 
 
-public class DocumentInfo {
+public class DocumentInfo implements java.io.Serializable {
     
     String URL;
     int TF ; 

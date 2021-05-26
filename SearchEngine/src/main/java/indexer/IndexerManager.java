@@ -6,9 +6,13 @@ package indexer;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -16,6 +20,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -23,7 +29,7 @@ import java.util.Set;
  * @author thebrownboy
  */
 public class IndexerManager implements Runnable{
-    private IndexerDatabase mainDatabase ; 
+    IndexerDatabase mainDatabase ; 
     static final Object LOCK1 = new Object();
     String []allURls ; 
     int numberOfThreads ; 
@@ -168,14 +174,62 @@ public class IndexerManager implements Runnable{
         }
         return source ; 
     }
-    public static void main(String args[]) throws InterruptedException{
+    public static void main(String args[]) throws InterruptedException, IOException{
+        // it is supposed that we will read the previous clawer size and the  URLS
         
+         
+       
+       
         IndexerManager manager = new IndexerManager();
+        int previousSize;
+        File databasefile=new File("Database.ser");
+        if(databasefile.exists()){
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("Database.ser"));
+            
+
+            try {
+                manager.mainDatabase=(IndexerDatabase)in.readObject();
+            } catch (ClassNotFoundException ex) {
+
+            }
+            in = new ObjectInputStream(new FileInputStream("PrevoiousSize.ser"));
+            try {
+                previousSize = (int) in.readObject();
+            } catch (ClassNotFoundException ex) {
+                previousSize=0 ; 
+            }
+          
+        }
+        else    
+            previousSize=0; 
+            
+       
+            
+            
+        
         Set<String> URLs = manager.readURL();
         manager.allURls=new String[URLs.size()]; 
         URLs.toArray(manager.allURls); 
         
-        //manager.run();
+        if(manager.allURls.length==previousSize){
+            //in.close();
+            return;
+        }
+        //in.close();
+        String []temp=new String[manager.allURls.length-previousSize];
+        int j =0 ; 
+        for(int i = previousSize; i<manager.allURls.length;i++){
+            temp[j]=manager.allURls[i]; 
+            j++; 
+        }
+        manager.allURls=temp ; 
+            
+
+            //manager.run();
+            
+            
+        
+        
         int numberOfCores= Runtime.getRuntime().availableProcessors(); 
         manager.numberOfThreads=numberOfCores ; 
         Thread []threads= new Thread[numberOfCores]; 
@@ -184,11 +238,26 @@ public class IndexerManager implements Runnable{
             threads[i].setName(Integer.toString(i));
             threads[i].start();
         }
-      
+
         for(int i = 0 ; i<numberOfCores; i++){
             threads[i].join();
         }
         
+        
+        
+        ObjectOutputStream out = new ObjectOutputStream(
+        new FileOutputStream("Database.ser")
+        );
+        out.writeObject(manager.mainDatabase);
+        out.flush();
+        out.close();
+        
+        out = new ObjectOutputStream(
+        new FileOutputStream("PrevoiousSize.ser")
+        );
+        out.writeObject(manager.allURls.length);
+        
+         
         System.out.println(manager.wordOccurences.keySet());
         System.out.println("Hello");
         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("python")){

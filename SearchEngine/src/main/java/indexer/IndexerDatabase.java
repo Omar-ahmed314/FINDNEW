@@ -25,7 +25,7 @@ import java.util.Set;
 
 
 */
-public class IndexerDatabase {
+public class IndexerDatabase implements java.io.Serializable{
     Map<String,Set<DocumentInfo>> indexerMap ; 
 
     public IndexerDatabase() {
