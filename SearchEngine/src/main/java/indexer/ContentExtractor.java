@@ -41,25 +41,32 @@ public class ContentExtractor {
         Map<String,Integer> elements = new HashMap<String,Integer>(); 
         for(String a : words){
             PorterStemmer stemmer = new PorterStemmer();
-            
-            a=a.replaceAll("[^a-zA-Z0-9]","" ); // replace all the specail chars  replace (!(a-z)(A-Z)(0-9))
-            a=a.toLowerCase(); 
-            a=stemmer.stemWord(a); 
-            if(a.isEmpty() || a.equals(" "))
-                continue;
-            try{
-                int i = Integer.parseInt(a.trim());
-                // removing the numbers from the set 
-                // if the execption happens then it is not a number 
-                // if no exception happens so it is a number and will not be added in the set 
-            }catch(NumberFormatException e ){
-                if(elements.containsKey(a)){
-                    Integer j = elements.get(a); 
-                    j++; 
-                    elements.replace(a, j); 
+            String parts[]=a.split("[^a-zA-Z0-9]"); 
+            //a=a.replaceAll("[^a-zA-Z0-9]","" ); // replace all the specail chars  replace (!(a-z)(A-Z)(0-9))
+            for(int i = 0 ; i<parts.length; i++){
+               parts[i]=parts[i].toLowerCase();
+               parts[i]=stemmer.stemWord(parts[i]); 
+
+            }
+            //a=a.toLowerCase(); 
+           // a=stemmer.stemWord(a); 
+            for(String b : parts){
+                if(b.isEmpty() || b.equals(" "))
+                    continue;
+                try{
+                    int i = Integer.parseInt(b.trim());
+                    // removing the numbers from the set 
+                    // if the execption happens then it is not a number 
+                    // if no exception happens so it is a number and will not be added in the set 
+                }catch(NumberFormatException e ){
+                    if(elements.containsKey(b)){
+                        Integer j = elements.get(b); 
+                        j++; 
+                        elements.replace(b, j); 
+                    }
+                    else
+                        elements.put(b, 1) ; 
                 }
-                else
-                    elements.put(a, 1) ; 
             }
         }
         

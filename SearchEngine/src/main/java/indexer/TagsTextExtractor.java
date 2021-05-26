@@ -47,19 +47,30 @@ public class TagsTextExtractor {
             String text = ptags.get(i).text();
             String[] words=text.split(" "); 
             for(String a : words){
-                a=a.replaceAll("[^a-zA-Z0-9]", ""); 
-                a=a.toLowerCase(); 
                 PorterStemmer stemmer = new PorterStemmer();
-                a=stemmer.stemWord(a); 
+                String parts[]=a.split("[^a-zA-Z0-9]"); 
+                //a=a.replaceAll("[^a-zA-Z0-9]","" ); // replace all the specail chars  replace (!(a-z)(A-Z)(0-9))
+                for(int j = 0 ; j<parts.length; j++){
+                   parts[j]=parts[j].toLowerCase();
+                   parts[j]=stemmer.stemWord(parts[j]); 
+
+                }
+//                a=a.replaceAll("[^a-zA-Z0-9]", ""); 
+//                a=a.toLowerCase(); 
+//                PorterStemmer stemmer = new PorterStemmer();
+//                a=stemmer.stemWord(a); 
+                
                 //TO-DO for example if you have something like that "python.org" 
                 // if you search by the word python you will not find it because the word pythonorg which will be put in the indexer not python 
-                if(unique_words.containsKey(a)){
-                    Integer j = unique_words.get(a); 
-                    j++; 
-                    unique_words.replace(a, j); 
+                for(String b : parts){
+                    if(unique_words.containsKey(b)){
+                        Integer j = unique_words.get(b); 
+                        j++; 
+                        unique_words.replace(b, j); 
+                    }
+                    else
+                        unique_words.put(b, 1); 
                 }
-                else
-                    unique_words.put(a, 1); 
             }
             // TO-DO we should remove the Stoping words and nubmers from words added to the set done 
             // we should genralize the concept over the whole tags  that can contain text  done 
