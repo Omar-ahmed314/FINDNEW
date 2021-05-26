@@ -26,6 +26,7 @@ public class IndexerManager implements Runnable{
     private IndexerDatabase mainDatabase ; 
     static final Object LOCK1 = new Object();
     String []allURls ; 
+    int numberOfThreads ; 
    // Map<String ,Map<String, Integer>> tagsContent; // 
     
     Map<String,Map<String ,Map<String, Integer>>> tagsContent ;  // url->map(tag name->map(word->occurnece)); 
@@ -58,14 +59,22 @@ public class IndexerManager implements Runnable{
         
         int start , end;
         System.out.println("I am thread "+Thread.currentThread().getName());
-        if(Thread.currentThread().getName().equals("1")){
-            start=0 ; 
-            end=allURls.length/2 ; 
-        }
-        else {
-            start = allURls.length/2; 
-            end= allURls.length ; 
-        }
+//        if(Thread.currentThread().getName().equals("1")){
+//            start=0 ; 
+//            end=allURls.length/2 ; 
+//        }
+//        else {
+//            start = allURls.length/2; 
+//            end= allURls.length ; 
+//        }
+            
+        start=Integer.parseInt(Thread.currentThread().getName())*(allURls.length/numberOfThreads);
+        if(Integer.parseInt(Thread.currentThread().getName())==numberOfThreads-1)
+            end= allURls.length; 
+        else 
+            end=(Integer.parseInt(Thread.currentThread().getName())+1)*(allURls.length/numberOfThreads);
+        
+        
         
         for(int i = start ; i<end ; i++){
             String source ="";
@@ -175,15 +184,19 @@ public class IndexerManager implements Runnable{
         URLs.toArray(manager.allURls); 
         
         //manager.run();
+        int numberOfCores= Runtime.getRuntime().availableProcessors(); 
+        manager.numberOfThreads=numberOfCores ; 
+        Thread []threads= new Thread[numberOfCores]; 
+        for(int i = 0 ; i<numberOfCores; i++){
+            threads[i]=new Thread(manager); 
+            threads[i].setName(Integer.toString(i));
+            threads[i].start();
+        }
+      
+        for(int i = 0 ; i<numberOfCores; i++){
+            threads[i].join();
+        }
         
-        Thread t1= new Thread(manager); 
-        Thread t2= new Thread(manager); 
-        t1.start();
-        t2.start();
-        t1.setName("1");
-        t2.setName("2");
-        t1.join();
-        t2.join();
         System.out.println(manager.wordOccurences.keySet());
         System.out.println("Hello");
         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("seo")){
