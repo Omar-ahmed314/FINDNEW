@@ -1,6 +1,7 @@
 
 package indexer;
 
+import ca.rmen.porterstemmer.PorterStemmer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -39,8 +40,11 @@ public class ContentExtractor {
         String [] words= text2.split(" ");        // split over the dilemeter  " " space ; 
         Map<String,Integer> elements = new HashMap<String,Integer>(); 
         for(String a : words){
+            PorterStemmer stemmer = new PorterStemmer();
+            
             a=a.replaceAll("[^a-zA-Z0-9]","" ); // replace all the specail chars  replace (!(a-z)(A-Z)(0-9))
             a=a.toLowerCase(); 
+            a=stemmer.stemWord(a); 
             if(a.isEmpty() || a.equals(" "))
                 continue;
             try{

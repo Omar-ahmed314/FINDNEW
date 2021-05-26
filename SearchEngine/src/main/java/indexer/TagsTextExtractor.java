@@ -5,6 +5,7 @@
 package indexer;
 
 
+import ca.rmen.porterstemmer.PorterStemmer;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -48,6 +49,8 @@ public class TagsTextExtractor {
             for(String a : words){
                 a=a.replaceAll("[^a-zA-Z0-9]", ""); 
                 a=a.toLowerCase(); 
+                PorterStemmer stemmer = new PorterStemmer();
+                a=stemmer.stemWord(a); 
                 //TO-DO for example if you have something like that "python.org" 
                 // if you search by the word python you will not find it because the word pythonorg which will be put in the indexer not python 
                 if(unique_words.containsKey(a)){
@@ -86,13 +89,15 @@ public class TagsTextExtractor {
         
     } 
      public Map<String ,Map<String, Integer>> getAllTagsText(String source ){
+         getTagtext(source, "title");
          for(int i = 1 ; i<=6; i++){
              getTagtext(source, "h"+i);
          }
-         getTagtext(source, "a");
          getTagtext(source, "p");
+         getTagtext(source, "a");
+         
          getTagtext(source, "li");
-         getTagtext(source, "title");
+         
          
          getTagtext(source, "ol");
          getTagtext(source, "dt");

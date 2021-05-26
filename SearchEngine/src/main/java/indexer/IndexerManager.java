@@ -191,7 +191,7 @@ public class IndexerManager implements Runnable{
         
         System.out.println(manager.wordOccurences.keySet());
         System.out.println("Hello");
-        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("seo")){
+        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("python")){
             a.printInfo();
         }
         
