@@ -17,6 +17,11 @@ import java.net.URL;
  */
 
 
+/*documentation of PageDownloader class 
+    this class is very simple it has just one function which downlad the source of the page it just takes the URL of the page and return the html source of it 
+ 
+ */
+
 // this Class will help you  to download any web page source , you can use the "downloadpage function " 
 // to get the source of the page as text ; 
 public class PageDownloader {
