@@ -13,6 +13,18 @@ import java.util.Set;
  *
  * @author thebrownboy
  */
+
+
+
+/*Documentation of the IndexerDatabase class one of the most important classes in the indexer .. 
+
+    this Class contain a map of (word->setofDocumentinfo that contains this word)
+    1- addDocument takes word and Documentinfo  and put it in the indexr map 
+    2- get methods .. 
+    3- function to check if a specific word exists in the database or not 
+
+
+*/
 public class IndexerDatabase {
     Map<String,Set<DocumentInfo>> indexerMap ; 
 
@@ -23,6 +35,8 @@ public class IndexerDatabase {
     
     public void addDocument(String word, DocumentInfo doc){
         if(indexerMap.containsKey(word)){
+            // if the map contains this word just add the new document info 
+            // if not initialize the set with that doc  
             Set<DocumentInfo> wordSet= indexerMap.get(word); 
             wordSet.add(doc);
             indexerMap.replace(word, wordSet); 
