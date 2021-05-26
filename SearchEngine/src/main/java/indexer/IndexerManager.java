@@ -59,15 +59,7 @@ public class IndexerManager implements Runnable{
         
         int start , end;
         System.out.println("I am thread "+Thread.currentThread().getName());
-//        if(Thread.currentThread().getName().equals("1")){
-//            start=0 ; 
-//            end=allURls.length/2 ; 
-//        }
-//        else {
-//            start = allURls.length/2; 
-//            end= allURls.length ; 
-//        }
-            
+          
         start=Integer.parseInt(Thread.currentThread().getName())*(allURls.length/numberOfThreads);
         if(Integer.parseInt(Thread.currentThread().getName())==numberOfThreads-1)
             end= allURls.length; 
