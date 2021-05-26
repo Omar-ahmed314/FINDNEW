@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Scanner;
@@ -23,12 +24,18 @@ import java.util.Set;
  */
 public class IndexerManager {
     private IndexerDatabase mainDatabase ; 
-    Map<String ,Map<String, Integer>> tagsContent;
+   // Map<String ,Map<String, Integer>> tagsContent; // 
+    
+    Map<String,Map<String ,Map<String, Integer>>> tagsContent ;  // url->map(tag name->map(word->occurnece)); 
      
-    Map<String,Integer> wordOccurences;
+  //  Map<String,Integer> wordOccurences;
+    
+    Map<String,Map<String,Integer>> wordOccurences;  // url->map(word->occurences); 
 
     public IndexerManager() {
         mainDatabase= new IndexerDatabase(); 
+        wordOccurences=new HashMap<>(); 
+        tagsContent=new HashMap<>(); 
     }
     
      
@@ -54,9 +61,9 @@ public class IndexerManager {
         return tagsTextExtractor.getAllTagsText(source); 
     }
     void UpdatingDatabase(String URL,String tagName){
-        Map<String,Integer> pTagMap=tagsContent.get(tagName); 
+        Map<String,Integer> pTagMap=tagsContent.get(URL).get(tagName);// every url has its specific tags and every tag has its specific words and occurences .  
         for (Map.Entry<String,Integer> entry : pTagMap.entrySet()){
-            if(wordOccurences.containsKey(entry.getKey())){// Iam sure that it will be true forever  bc any word that is in p it will definetly be in wordOccurences
+            if(wordOccurences.get(URL).containsKey(entry.getKey())){// Iam sure that it will be true forever  bc any word that is in p it will definetly be in wordOccurences
                 if(mainDatabase.containsWord(entry.getKey())){//write your comments 
                     // if your database stored this word before 
                     // so you have two choices whether to update the doc with the position
@@ -81,7 +88,7 @@ public class IndexerManager {
                 // the previous code will be executed if and only if 
                 // the doc was related with the word but we have to update the occurence of it 
                 DocumentInfo doc=new DocumentInfo(URL);
-                doc.setTF(wordOccurences.get(entry.getKey()));
+                doc.setTF(wordOccurences.get(URL).get(entry.getKey()));
                 doc.setOccurence(tagName,entry.getValue());
                 mainDatabase.addDocument(entry.getKey(), doc);
                 
@@ -129,18 +136,18 @@ public class IndexerManager {
         for(String a : URLs){
             String source ="";
             try {
-                source=manager.getPageSource(a); 
-                manager.wordOccurences= manager.getPageTextContent(source);
+                source=manager.getPageSource(a);  // getting the html code of the page 
+//                System.out.println(manager.getPageTextContent(source));
+                manager.wordOccurences.put(a,  manager.getPageTextContent(source));// url of the doc -> map(words->Occurences);  
 
             }catch (IOException ex) {
                    System.out.println("Error While Reading the source of the Page");
             }
-            manager.tagsContent=manager.getTagsContent(source); 
-            System.out.println(manager.tagsContent);
+            manager.tagsContent.put(a, manager.getTagsContent(source)); 
             manager.buildDatabase(a);
         }
         
-        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("python")){
+        for (DocumentInfo a : manager.mainDatabase.indexerMap.get("seo")){
             a.printInfo();
         }
         
