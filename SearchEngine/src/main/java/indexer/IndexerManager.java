@@ -22,7 +22,7 @@ import java.util.Set;
  *
  * @author thebrownboy
  */
-public class IndexerManager {
+public class IndexerManager implements Runnable{
     private IndexerDatabase mainDatabase ; 
    // Map<String ,Map<String, Integer>> tagsContent; // 
     
@@ -41,17 +41,48 @@ public class IndexerManager {
      
     public Set<String> readURL(){
         Set <String>URLs= new HashSet<>(); 
-        File myObj = new File("ClawerURLs.txt");
+        File myObj;
+        if(Thread.currentThread().getName().equals("1"))
+        {myObj = new File("ClawerURLs.txt");
+            System.out.println("this is the thread number"+Thread.currentThread().getName()); 
+        }
+        else{ 
+            myObj = new File("file2.txt"); 
+            System.out.println("this is the thread number"+Thread.currentThread().getName()); 
+
+        }
         try (Scanner myReader = new Scanner(myObj)) {
             while(myReader.hasNextLine()) {
                  URLs.add(myReader.nextLine());
             }
         }   catch (FileNotFoundException ex) {
-                System.out.println("Error while Reading the file");
+                System.out.println("Error while Reading the file"+Thread.currentThread().getName());
         }  
         
         return URLs ; 
     }  
+    public void run(){
+        
+        Set<String> URLs = this.readURL();
+        for(String a : URLs){
+            String source ="";
+            try {
+                source=this.getPageSource(a);  // getting the html code of the page 
+//                System.out.println(manager.getPageTextContent(source));
+                this.wordOccurences.put(a,  this.getPageTextContent(source));// url of the doc -> map(words->Occurences);  
+
+            }catch (IOException ex) {
+                   System.out.println("Error While Reading the source of the Page");
+            }
+            this.tagsContent.put(a, this.getTagsContent(source)); 
+            
+            synchronized(this.mainDatabase){
+                this.buildDatabase(a);
+            }
+        }
+    
+    }
+    
     public Map<String, Integer> getPageTextContent(String  source){
         ContentExtractor extractor=new ContentExtractor(); 
         return extractor.getPageWords(source);
@@ -129,23 +160,19 @@ public class IndexerManager {
         }
         return source ; 
     }
-    public static void main(String args[]){
+    public static void main(String args[]) throws InterruptedException{
         
         IndexerManager manager = new IndexerManager();
-        Set<String> URLs = manager.readURL();
-        for(String a : URLs){
-            String source ="";
-            try {
-                source=manager.getPageSource(a);  // getting the html code of the page 
-//                System.out.println(manager.getPageTextContent(source));
-                manager.wordOccurences.put(a,  manager.getPageTextContent(source));// url of the doc -> map(words->Occurences);  
-
-            }catch (IOException ex) {
-                   System.out.println("Error While Reading the source of the Page");
-            }
-            manager.tagsContent.put(a, manager.getTagsContent(source)); 
-            manager.buildDatabase(a);
-        }
+        //manager.run();
+        
+        Thread t1= new Thread(manager); 
+        Thread t2= new Thread(manager); 
+        t1.start();
+        t2.start();
+        t1.setName("1");
+        t2.setName("2");
+        t1.join();
+        t2.join();
         
         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("seo")){
             a.printInfo();
