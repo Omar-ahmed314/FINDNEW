@@ -1,3 +1,4 @@
 /SearchEngine/target/
 /SearchEngine/*.txt
 /SearchEngine/*.ser
+/SearchEngine/compiler_output/
