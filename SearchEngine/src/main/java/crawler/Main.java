@@ -10,9 +10,9 @@ public class Main
     {
             Thread[] threads = new Thread[NUM_THREADS];
             String[] links = new String[NUM_THREADS];
-            links[0] = "https://abcnews.go.com";
-            links[1] = "https://www.npr.org";
-            links[2] = "https://www.nytimes.com";
+            links[0] = "https://www.wikipedia.org/";
+            links[1] = "https://www.bbc.com/news";
+            links[2] = "https://edition.cnn.com/";
 
 
 
@@ -36,9 +36,14 @@ public class Main
         }
         */
             ArrayList<Spider> spiders = new ArrayList<>();
+            /*
             spiders.add(new Spider("https://abcnews.go.com", 1));
             spiders.add(new Spider("https://www.npr.org", 2));
             spiders.add(new Spider("https://www.nytimes.com", 3));
+            */
+            spiders.add(new Spider("https://www.wikipedia.org/", 1));
+            spiders.add(new Spider("https://www.bbc.com/news", 2));
+             spiders.add(new Spider("https://edition.cnn.com/", 3));
             for (Spider s : spiders) {
                 try {
                     s.getThread().join();
