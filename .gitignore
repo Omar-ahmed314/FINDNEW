@@ -1,5 +1,6 @@
 /SearchEngine/target/
-*.txt
-*.ser
-*.jar
+/SearchEngine/Database.ser
+/SearchEngine/PrevoiousSize.ser
+/SearchEngine/jsoup-1.13.1.jar
 /SearchEngine/compiler_output/
+/SearchEngine/DB.txt
