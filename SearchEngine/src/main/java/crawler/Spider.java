@@ -33,7 +33,7 @@ public class Spider implements Runnable
     private void crawl(int depth,String url)
     {
         try {
-            if (depth < maxDepth) {
+            if (depth <= maxDepth) {
                 Document doc = request(url);
                 if (doc != null) {
                     for (Element link : doc.select("a[href]")) {
