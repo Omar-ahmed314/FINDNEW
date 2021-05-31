@@ -1,4 +1,5 @@
 /SearchEngine/target/
-/SearchEngine/*.txt
-/SearchEngine/*.ser
+*.txt
+*.ser
+*.jar
 /SearchEngine/compiler_output/
