@@ -268,7 +268,7 @@ public class IndexerManager implements Runnable{
         File file = new File("DB.txt");
         file.createNewFile(); 
         
-        FileWriter fw = new FileWriter("DB.txt"); 
+        FileWriter fw = new FileWriter("DB.json"); 
         fw.write(json);
         fw.close();
         
