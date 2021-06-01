@@ -1,77 +1,170 @@
 package main.java.crawler;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.*;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
+import java.util.Set;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.*;
+import org.jsoup.select.*;
 
 public class Spider implements Runnable
 {
-    private static final int maxDepth=4;
-    private Thread thread;
-    private String first_link;
-    private ArrayList<String> visited=new ArrayList<String>();
-    private int id;
+    //private String start_url="https://www.bbc.com/";
+    final Set<String> visited=new HashSet<String>();
+    static final Queue<String> notVisited=new LinkedList<String>();
+    int MAX_DOCS=100;
+     Integer cur_num_docs=0;
 
-    public Spider(String link, int id)
+    public static void setNotVisited(String link)
     {
-        System.out.println("Spider created");
-        first_link=link;
-        this.id=id;
-        thread=new Thread(this);    //use in main
-        thread.start();   //use in main
+        notVisited.add(link);
+    }
+
+    public Spider()
+    {
+
+    }
+
+
+    public void crawl()
+    {
+        //String html=getHTML(this.start_url);
+        while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
+        {
+            String link = null;
+            synchronized (notVisited) {
+                link = notVisited.poll();
+                if(link==null)
+                    try
+                    {
+                        notVisited.wait();
+                    }
+                    catch(InterruptedException ie)
+                    {
+                        ie.printStackTrace();
+                    }
+                    notVisited.notifyAll();
+            }
+                   /* while(link == null) {
+                        try {
+                           notVisited.wait();
+                            link = notVisited.poll();
+
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    */
+                    //notVisited.notifyAll();
+
+
+
+            if(visited.contains(link))
+            {
+                continue;
+            }
+            String html = getHTML(link);
+            Document doc = Jsoup.parse(html);
+            Elements elements = doc.select("a");
+            for (Element e : elements)
+            {
+                String href = e.attr("href");
+                href = postProLink(href, link);
+                if(visited.contains(href))
+                {
+                    continue;
+                }
+                notVisited.add(href);
+            }
+            synchronized (cur_num_docs) {
+                cur_num_docs++;
+            }
+            System.out.println(Thread.currentThread()+" : "+ link+ " Num docs= "+ cur_num_docs );
+            //todo out document of link
+            visited.add(link);
+
+        }
+    }
+
+    private String getHTML(String url)
+    {
+        URL u;
+        try
+        {
+            u=new URL(url);
+            URLConnection con=u.openConnection();
+            con.setRequestProperty("User.Agent","Bot1.0");
+            con.setRequestProperty("Accept.Charset","UTF-8");
+            InputStream is=con.getInputStream();
+            BufferedReader reader=new BufferedReader(new InputStreamReader((is)));
+            String line,html="";
+            while((line=reader.readLine())!=null)
+            {
+                html+= line+"\n";
+
+            }
+            html=html.trim();
+            return html;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String postProLink(String link, String base)
+    {
+        try
+        {
+            URL url=new URL(base);
+            if (link.startsWith("./"))
+            {
+                link=link.substring(2,link.length());
+                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+            }
+            else if(link.startsWith("#"))   //better remove this
+            {
+
+                link=base+link;
+                link=link.substring(0,link.length()-1);
+            }
+            else if(link.startsWith("/"))
+            {
+                link=link.substring(1,link.length());
+                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+            }
+            else if(link.startsWith("javascript:"))
+            {
+                link=null;
+            }
+            else if(link.startsWith("../"))
+            {
+                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+            }
+            return link;
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String removeName(String path)
+    {
+        int pos=path.lastIndexOf("/");
+        return pos<=-1?path:path.substring(0,pos+1);
     }
     @Override
     public void run()
     {
-        crawl(1,first_link);
-    }
-
-    private void crawl(int depth,String url)
-    {
-        try {
-            if (depth <= maxDepth) {
-                Document doc = request(url);
-                if (doc != null) {
-                    for (Element link : doc.select("a[href]")) {
-                        String nextLink = link.absUrl("href");
-                        if (!visited.contains(nextLink)) {
-                            crawl(++depth, nextLink);
-                        }
-                    }
-                }
-            }
-        }catch(Exception e){e.printStackTrace();}
-    }
-
-    private Document request(String url)
-    {
-        try
-        {
-            Connection con= Jsoup.connect(url);
-            Document doc=con.get();
-            if(con.response().statusCode()==200)
-            {
-                System.out.println("Spider ID:" + id + " Received webpage at "+ url);
-                String title= doc.title();
-                System.out.println(title);
-                visited.add(url);
-                return doc;
-            }
-            return null;
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            return null;
-        }
-    }
-
-    public Thread getThread()
-    {
-        return thread;
+        crawl();
     }
 }
