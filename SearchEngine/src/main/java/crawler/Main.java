@@ -4,54 +4,32 @@ import java.util.ArrayList;
 
 public class Main
 {
-    private static final int NUM_THREADS=3;
-
+    public static final int NUM_THREADS=5;
     public static void main(String[] args)
     {
-            Thread[] threads = new Thread[NUM_THREADS];
-            String[] links = new String[NUM_THREADS];
-            links[0] = "https://www.wikipedia.org/";
-            links[1] = "https://www.bbc.com/news";
-            links[2] = "https://edition.cnn.com/";
+        String start_url="https://www.bbc.com/";
+        Thread[] threads=new Thread[NUM_THREADS];
+        Spider spider=new Spider();
 
-
-
-        /*
+        Spider.setNotVisited("https://www.bbc.com/");
+        Spider.setNotVisited("https://www.cnn.com");
+        Spider.setNotVisited("https://www.coursera.org/");
+        Spider.setNotVisited("https://www.forbes.com/");
+        Spider.setNotVisited("https://www.washingtonpost.com/");
+        //spider.crawl();
         for(int i=0;i<NUM_THREADS;i++)
         {
-
-            threads[i]=new Thread(new Spider(links[i],i));
+            threads[i]=new Thread(spider);
+            threads[i].start();
         }
-        for(int i=0;i<NUM_THREADS;i++)
-        {
-            try
-            {
-                threads[i].join();
-            }
-            catch(InterruptedException ie)
-            {
+       /* for (Thread t : threads) {
+            try {
+                t.join();
+
+            } catch (InterruptedException ie) {
                 ie.printStackTrace();
             }
-
-        }
-        */
-            ArrayList<Spider> spiders = new ArrayList<>();
-            /*
-            spiders.add(new Spider("https://abcnews.go.com", 1));
-            spiders.add(new Spider("https://www.npr.org", 2));
-            spiders.add(new Spider("https://www.nytimes.com", 3));
-            */
-            spiders.add(new Spider("https://www.wikipedia.org/", 1));
-            spiders.add(new Spider("https://www.bbc.com/news", 2));
-             spiders.add(new Spider("https://edition.cnn.com/", 3));
-            for (Spider s : spiders) {
-                try {
-                    s.getThread().join();
-
-                } catch (InterruptedException ie) {
-                    ie.printStackTrace();
-                }
-            }
+        }*/
 
 
     }
