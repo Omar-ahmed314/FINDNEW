@@ -14,7 +14,7 @@ public class Main
         Spider.setNotVisited("https://www.bbc.com/");
         Spider.setNotVisited("https://www.cnn.com");
         Spider.setNotVisited("https://www.coursera.org/");
-        Spider.setNotVisited("https://www.forbes.com/");
+        Spider.setNotVisited("https://www.reddit.com");
         Spider.setNotVisited("https://www.washingtonpost.com/");
         //spider.crawl();
         for(int i=0;i<NUM_THREADS;i++)
