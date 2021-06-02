@@ -38,18 +38,21 @@ public class Spider implements Runnable
         while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
         {
             String link = null;
-            synchronized (notVisited) {
+
+            synchronized (notVisited)
+            {
                 link = notVisited.poll();
-                if(link==null)
-                    try
-                    {
+                if(visited.contains(link)) {
+                    continue;
+                }
+                if(link==null) {
+                    try {
                         notVisited.wait();
-                    }
-                    catch(InterruptedException ie)
-                    {
+                    } catch (InterruptedException ie) {
                         ie.printStackTrace();
                     }
                     notVisited.notifyAll();
+                }
             }
                    /* while(link == null) {
                         try {
@@ -65,29 +68,29 @@ public class Spider implements Runnable
 
 
 
-            if(visited.contains(link))
+            /*if(visited.contains(link))
             {
                 continue;
-            }
+            }*/
             String html = getHTML(link);
+            if(html==null) continue;
             Document doc = Jsoup.parse(html);
             Elements elements = doc.select("a");
             for (Element e : elements)
             {
                 String href = e.attr("href");
                 href = postProLink(href, link);
-                if(visited.contains(href))
-                {
-                    continue;
-                }
-                notVisited.add(href);
+                    if (!visited.contains(href) && !notVisited.contains(href)) {
+                        notVisited.add(href);
+                    }
+
             }
             synchronized (cur_num_docs) {
                 cur_num_docs++;
             }
             System.out.println(Thread.currentThread()+" : "+ link+ " Num docs= "+ cur_num_docs );
             //todo out document of link
-            visited.add(link);
+                    visited.add(link);
 
         }
     }
@@ -124,6 +127,7 @@ public class Spider implements Runnable
         try
         {
             URL url=new URL(base);
+            if(link!=null)
             if (link.startsWith("./"))
             {
                 link=link.substring(2,link.length());
@@ -152,7 +156,7 @@ public class Spider implements Runnable
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
             return null;
         }
     }
