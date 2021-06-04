@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
-import java.sql.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,12 +19,7 @@ public class Spider implements Runnable
     final Set<String> visited=new HashSet<String>();
     static final Queue<String> notVisited=new LinkedList<String>();
     int MAX_DOCS=100;
-     Integer cur_num_docs=0;
-    static Connection connection=null;
-    static Statement statement= null;
-    static ResultSet resultset=null;
-
-
+    Integer cur_num_docs=0;
 
     public static void setNotVisited(String link)
     {
@@ -34,15 +28,6 @@ public class Spider implements Runnable
 
     public Spider()
     {
-        try {
-            connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler_db","root","data6OO6suck5");
-            statement = connection.createStatement();
-
-        }
-        catch (SQLException throwables)
-        {
-            throwables.printStackTrace();
-        }
 
     }
 
@@ -50,37 +35,16 @@ public class Spider implements Runnable
     public void crawl()
     {
         //String html=getHTML(this.start_url);
-
-        //while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
-        while(/*numRows!=0&&*/cur_num_docs<=MAX_DOCS)
+        while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
         {
-
-            int numRows=-1;
-            try {
-                resultset=statement.executeQuery("SELECT COUNT(*) FROM not_visited");
-                numRows=Integer.parseInt(resultset.getString("count(*)"));
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-            if(numRows<=0) break;
-
             String link = null;
 
             synchronized (notVisited)
             {
-                //link = notVisited.poll();
-                try {
-                    resultset = statement.executeQuery("SELECT COUNT(*) FROM not_visited LIMIT 1");
-
-                    link = resultset.getString("link");
-                }
-                catch(Exception e){e.printStackTrace();}
-
-                /*if(visited.contains(link)) {
+                link = notVisited.poll();
+                if(visited.contains(link)) {
                     continue;
-                }*/
-
-
+                }
                 if(link==null) {
                     try {
                         notVisited.wait();
@@ -94,13 +58,12 @@ public class Spider implements Runnable
                         try {
                            notVisited.wait();
                             link = notVisited.poll();
-
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     */
-                    //notVisited.notifyAll();
+            //notVisited.notifyAll();
 
 
 
@@ -116,9 +79,9 @@ public class Spider implements Runnable
             {
                 String href = e.attr("href");
                 href = postProLink(href, link);
-                    if (!visited.contains(href) && !notVisited.contains(href)) {
-                        notVisited.add(href);
-                    }
+                if (!visited.contains(href) && !notVisited.contains(href)) {
+                    notVisited.add(href);
+                }
 
             }
             synchronized (cur_num_docs) {
@@ -126,7 +89,7 @@ public class Spider implements Runnable
             }
             System.out.println(Thread.currentThread()+" : "+ link+ " Num docs= "+ cur_num_docs );
             //todo out document of link
-                    visited.add(link);
+            visited.add(link);
 
         }
     }
@@ -164,30 +127,30 @@ public class Spider implements Runnable
         {
             URL url=new URL(base);
             if(link!=null)
-            if (link.startsWith("./"))
-            {
-                link=link.substring(2,link.length());
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
-            else if(link.startsWith("#"))   //better remove this
-            {
+                if (link.startsWith("./"))
+                {
+                    link=link.substring(2,link.length());
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
+                else if(link.startsWith("#"))   //better remove this
+                {
 
-                link=base+link;
-                link=link.substring(0,link.length()-1);
-            }
-            else if(link.startsWith("/"))
-            {
-                link=link.substring(1,link.length());
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
-            else if(link.startsWith("javascript:"))
-            {
-                link=null;
-            }
-            else if(link.startsWith("../"))
-            {
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
+                    link=base+link;
+                    link=link.substring(0,link.length()-1);
+                }
+                else if(link.startsWith("/"))
+                {
+                    link=link.substring(1,link.length());
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
+                else if(link.startsWith("javascript:"))
+                {
+                    link=null;
+                }
+                else if(link.startsWith("../"))
+                {
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
             return link;
         }
         catch (Exception e)
