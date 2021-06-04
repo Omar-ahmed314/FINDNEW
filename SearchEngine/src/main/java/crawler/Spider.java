@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.*;
+import java.sql.*;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,6 +21,11 @@ public class Spider implements Runnable
     static final Queue<String> notVisited=new LinkedList<String>();
     int MAX_DOCS=100;
      Integer cur_num_docs=0;
+    static Connection connection=null;
+    static Statement statement= null;
+    static ResultSet resultset=null;
+
+
 
     public static void setNotVisited(String link)
     {
@@ -28,6 +34,15 @@ public class Spider implements Runnable
 
     public Spider()
     {
+        try {
+            connection= DriverManager.getConnection("jdbc:mysql://localhost:3306/crawler_db","root","data6OO6suck5");
+            statement = connection.createStatement();
+
+        }
+        catch (SQLException throwables)
+        {
+            throwables.printStackTrace();
+        }
 
     }
 
@@ -35,16 +50,37 @@ public class Spider implements Runnable
     public void crawl()
     {
         //String html=getHTML(this.start_url);
-        while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
+
+        //while(!notVisited.isEmpty()&&cur_num_docs<=MAX_DOCS)
+        while(/*numRows!=0&&*/cur_num_docs<=MAX_DOCS)
         {
+
+            int numRows=-1;
+            try {
+                resultset=statement.executeQuery("SELECT COUNT(*) FROM not_visited");
+                numRows=Integer.parseInt(resultset.getString("count(*)"));
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+            if(numRows<=0) break;
+
             String link = null;
 
             synchronized (notVisited)
             {
-                link = notVisited.poll();
-                if(visited.contains(link)) {
-                    continue;
+                //link = notVisited.poll();
+                try {
+                    resultset = statement.executeQuery("SELECT COUNT(*) FROM not_visited LIMIT 1");
+
+                    link = resultset.getString("link");
                 }
+                catch(Exception e){e.printStackTrace();}
+
+                /*if(visited.contains(link)) {
+                    continue;
+                }*/
+
+
                 if(link==null) {
                     try {
                         notVisited.wait();
