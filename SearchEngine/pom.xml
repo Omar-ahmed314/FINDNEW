@@ -10,6 +10,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
     </properties>
+<<<<<<< HEAD
     
     <dependencies>
         <dependency>
@@ -39,4 +40,6 @@
         </dependency>
 
     </dependencies>
+=======
+>>>>>>> 5daba3661d4382893b1acc6a7fd0ab24272ac80e
 </project>
