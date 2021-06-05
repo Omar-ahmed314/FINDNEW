@@ -1,5 +1,5 @@
 
-package indexer;
+package main.java.indexer;
 
 import ca.rmen.porterstemmer.PorterStemmer;
 import java.io.File;

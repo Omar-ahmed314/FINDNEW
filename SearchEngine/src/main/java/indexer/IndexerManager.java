@@ -2,7 +2,7 @@
  *
  * @author thebrownboy
  */
-package indexer;
+package main.java.indexer;
 
 import com.google.gson.Gson;
 import java.io.BufferedReader;
