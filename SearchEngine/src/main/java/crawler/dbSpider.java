@@ -74,28 +74,14 @@ public class dbSpider implements Runnable
             }
             if(link!=null) db.dbEnqueue("visited",link);
 */
-            String[]subLinks=new String[100];
-            int hasrobot=hasRobot(subLinks,100,link);
 
             try {
                 Document doc = request(link);
                 if (doc != null) {
-                    for (Element linkElement : doc.select("a[href]"))
-                    {
+                    for (Element linkElement : doc.select("a[href]")) {
                         String nextLink = linkElement.absUrl("href");
                         //synchronized (db)
                         //{
-                        if(hasrobot!=-1)
-                        {
-                            for(int i=0;i<hasrobot;i++)
-                            {
-                                if (nextLink.contains(subLinks[i]))
-                                {
-                                    nextLink=null;
-                                    break;
-                                }
-                            }
-                        }
                             if (!db.exists("visited", nextLink) && !db.exists("not_visited", nextLink)&&nextLink!=null) {
                                 //System.out.println(Thread.currentThread()+ ": Received webpage at "+ nextLink);
                                 db.dbEnqueue("not_visited", nextLink);
@@ -158,32 +144,6 @@ public class dbSpider implements Runnable
     public void run()
     {
         crawl();
-    }
-
-    int hasRobot(String[] subLinks,int size,String link)
-    {
-        if(link==null) return -1;
-        if(!link.endsWith(".com")&&!link.endsWith("/")) return -1;
-        if(link.endsWith("/")) link=link.substring(0,link.length()-1);
-        boolean res=true;
-        int count=0;
-        try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(link+"/robots.txt").openStream()))) {
-            String line = null;
-            while((line = in.readLine()) != null) {
-                if(line.startsWith("User-agent: *"))
-                {
-                    line=in.readLine();
-                    if(line.startsWith("Disallow: /"))
-                    {
-                     subLinks[count++]=link+line.substring(10,line.length());
-                    }
-                }
-            }
-        } catch (IOException e) {
-            res=false;
-            e.printStackTrace();
-        }
-        return count;
     }
 
     private String getHTML(String url)
