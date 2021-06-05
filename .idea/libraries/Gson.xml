@@ -1,0 +1,19 @@
+<component name="libraryTable">
+  <library name="Gson">
+    <CLASSES />
+    <JAVADOC />
+    <SOURCES>
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/codegen/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/codegen/src/test/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/examples/android-proguard-example/src" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/extras/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/extras/src/test/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/gson/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/gson/src/main/java-templates" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/gson/src/test/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/metrics/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/proto/src/main/java" />
+      <root url="file://$PROJECT_DIR$/../gson-master/gson-master/proto/src/test/java" />
+    </SOURCES>
+  </library>
+</component>

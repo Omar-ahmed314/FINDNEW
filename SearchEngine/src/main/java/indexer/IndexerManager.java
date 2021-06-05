@@ -2,13 +2,15 @@
  *
  * @author thebrownboy
  */
-package indexer;
+package main.java.indexer;
 
+import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
@@ -83,7 +85,7 @@ public class IndexerManager implements Runnable{
                 this.wordOccurences.put(allURls[i],  this.getPageTextContent(source));// url of the doc -> map(words->Occurences);  
                 }
             }catch (IOException ex) {
-                   System.out.println("Error While Reading the source of the Page");
+                   System.out.println("Error While Reading the source of the Page"+allURls[i]);
             }
              synchronized(LOCK1){
             this.tagsContent.put(allURls[i], this.getTagsContent(source)); 
@@ -239,6 +241,7 @@ public class IndexerManager implements Runnable{
             threads[i].start();
         }
 
+
         for(int i = 0 ; i<numberOfCores; i++){
             threads[i].join();
         }
@@ -255,11 +258,20 @@ public class IndexerManager implements Runnable{
         out = new ObjectOutputStream(
         new FileOutputStream("PrevoiousSize.ser")
         );
-        out.writeObject(manager.allURls.length);
+        out.writeObject(manager.allURls.length+previousSize);
         
          
         System.out.println(manager.wordOccurences.keySet());
         System.out.println("Hello");
+        Gson gson = new Gson(); 
+        String json = gson.toJson(manager.mainDatabase.indexerMap); 
+        
+        
+        FileWriter fw = new FileWriter("DB.json"); 
+        fw.write(json);
+        fw.close();
+        
+        
         for (DocumentInfo a : manager.mainDatabase.indexerMap.get("python")){
             a.printInfo();
         }

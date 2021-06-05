@@ -2,7 +2,7 @@
  *
  * @author thebrownboy
  */
-package indexer;
+package main.java.indexer;
 
 import java.util.HashMap;
 import java.util.HashSet;

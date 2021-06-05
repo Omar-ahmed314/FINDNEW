@@ -3,7 +3,7 @@
  *
  * @author thebrownboy
  */
-package indexer;
+package main.java.indexer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
