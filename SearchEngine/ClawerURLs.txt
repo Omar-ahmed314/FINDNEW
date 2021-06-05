@@ -926,3 +926,4 @@ https://www.coursera.org/learn/infonomics-1
 https://www.coursera.org/ibkr
 https://www.baeldung.com/java-delete-file-contents
 https://www.programiz.com/c-programming/c-structures
+https://stackoverflow.com/questions/49714111/how-do-you-run-a-cmd-command-in-a-c-program
