@@ -2,7 +2,7 @@
  *
  * @author thebrownboy
  */
-package indexer;
+package main.java.indexer;
 
 
 import ca.rmen.porterstemmer.PorterStemmer;
