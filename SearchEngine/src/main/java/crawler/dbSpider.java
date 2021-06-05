@@ -15,11 +15,10 @@ import org.jsoup.select.*;
 
 public class dbSpider implements Runnable
 {
-    //private String start_url="https://www.bbc.com/";
     final Set<String> visited=new HashSet<String>();
     static final Queue<String> notVisited=new LinkedList<String>();
     public static final Database db=new Database();
-    int MAX_DOCS=500;
+    int MAX_DOCS=1000;
     Integer cur_num_docs=0;
     FileWriter out;
 
@@ -27,7 +26,7 @@ public class dbSpider implements Runnable
     public dbSpider()
     {
         try {
-            out = new FileWriter("links.txt",true);
+            out = new FileWriter(new File(".\\SearchEngine\\links.txt"),true);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -48,8 +47,8 @@ public class dbSpider implements Runnable
             synchronized (db)
             {
                 link= db.dbDeque("not_visited");
-                if(db.exists("visited",link)) continue;
             }
+            if(db.exists("visited",link)) continue;
 
             /*
             String html = getHTML(link);
@@ -84,6 +83,7 @@ public class dbSpider implements Runnable
                         //synchronized (db)
                         //{
                             if (!db.exists("visited", nextLink) && !db.exists("not_visited", nextLink)&&nextLink!=null) {
+                                //System.out.println(Thread.currentThread()+ ": Received webpage at "+ nextLink);
                                 db.dbEnqueue("not_visited", nextLink);
                             }
                         //}
@@ -94,6 +94,7 @@ public class dbSpider implements Runnable
                 System.out.println("Error in crawling!");
                 e.printStackTrace();
             }
+
             //synchronized (cur_num_docs) {
             //    cur_num_docs++;
             //}
@@ -106,6 +107,43 @@ public class dbSpider implements Runnable
         }
         catch(Exception e)
         {e.printStackTrace();}
+    }
+
+
+    private Document request(String url)
+    {
+        try
+        {
+            Connection con= Jsoup.connect(url);
+            Document doc=con.get();
+            if(con.response().statusCode()==200)
+            {
+                out.write(url+"\n");
+                try {
+                    out.flush();
+                }
+                catch(Exception e)
+                {e.printStackTrace();}
+                System.out.println(Thread.currentThread()+ ": Received webpage at "+ url);
+                String title= doc.title();
+                System.out.println(title);
+                //visited.add(url);
+                db.dbEnqueue("visited",url);
+                return doc;
+            }
+            return null;
+        }
+        catch (IOException ioe)
+        {
+            //ioe.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public void run()
+    {
+        crawl();
     }
 
     private String getHTML(String url)
@@ -137,10 +175,10 @@ public class dbSpider implements Runnable
 
 
     /*
-    *base is broken down into
-    * protocol://host/path/file?query
-    *Realative path
-    *protocol:/host/path/realtive
+     *base is broken down into
+     * protocol://host/path/file?query
+     *Realative path
+     *protocol:/host/path/realtive
      */
     private String postProLink(String link, String base)
     {
@@ -191,39 +229,4 @@ public class dbSpider implements Runnable
         return pos<=-1?path:path.substring(0,pos+1);
     }
 
-    private Document request(String url)
-    {
-        try
-        {
-            Connection con= Jsoup.connect(url);
-            Document doc=con.get();
-            if(con.response().statusCode()==200)
-            {
-                out.write(url+"\n");
-                try {
-                    out.flush();
-                }
-                catch(Exception e)
-                {e.printStackTrace();}
-                System.out.println(Thread.currentThread()+ ": Received webpage at "+ url);
-                String title= doc.title();
-                System.out.println(title);
-                //visited.add(url);
-                db.dbEnqueue("visited",url);
-                return doc;
-            }
-            return null;
-        }
-        catch (IOException ioe)
-        {
-            ioe.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public void run()
-    {
-        crawl();
-    }
 }
