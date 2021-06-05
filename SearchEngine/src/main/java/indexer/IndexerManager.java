@@ -258,15 +258,14 @@ public class IndexerManager implements Runnable{
         out = new ObjectOutputStream(
         new FileOutputStream("PrevoiousSize.ser")
         );
-        out.writeObject(manager.allURls.length);
+        out.writeObject(manager.allURls.length+previousSize);
         
          
         System.out.println(manager.wordOccurences.keySet());
         System.out.println("Hello");
         Gson gson = new Gson(); 
         String json = gson.toJson(manager.mainDatabase.indexerMap); 
-        File file = new File("DB.txt");
-        file.createNewFile(); 
+        
         
         FileWriter fw = new FileWriter("DB.json"); 
         fw.write(json);
