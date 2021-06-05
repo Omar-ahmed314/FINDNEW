@@ -1,2 +1,5 @@
 /SearchEngine/target/
 /SearchEngine/compiler_output/
+DB.json
+PreviousSize.ser
+Database.ser
