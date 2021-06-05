@@ -976,3 +976,5 @@ https://www.bbc.co.uk/weather
 https://www.bbc.com/news
 https://news.sky.com/#main
 https://news.sky.com/us
+https://abcnews.go.com/myinterests?cid=clicksource_nc_seeall
+https://www.coursera.org/learn/introduction-psychology

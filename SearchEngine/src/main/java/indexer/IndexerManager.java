@@ -267,7 +267,7 @@ public class IndexerManager implements Runnable{
         String json = gson.toJson(manager.mainDatabase.indexerMap); 
         
         
-        FileWriter fw = new FileWriter("DB.json"); 
+        FileWriter fw = new FileWriter(".\\SearchEngine.\\website.\\DB.json");
         fw.write(json);
         fw.close();
         
