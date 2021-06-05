@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class Main
 {
-    public static final int NUM_THREADS=5;
+    public static final int NUM_THREADS=20;
     public static void main(String[] args)
     {
         //String start_url="https://www.bbc.com/";

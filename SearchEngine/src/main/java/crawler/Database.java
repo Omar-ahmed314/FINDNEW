@@ -47,8 +47,8 @@ public class Database
         {
             Statement st=connection.createStatement();
             resultSet=st.executeQuery(selectQuery);
-            resultSet.next();
-            link=resultSet.getString("link");
+            if(resultSet.next())
+                link=resultSet.getString("link");
             statement.executeUpdate(deleteQuery);
         }
         catch(Exception e)
