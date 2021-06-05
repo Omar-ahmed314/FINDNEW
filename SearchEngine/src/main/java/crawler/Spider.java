@@ -19,7 +19,7 @@ public class Spider implements Runnable
     final Set<String> visited=new HashSet<String>();
     static final Queue<String> notVisited=new LinkedList<String>();
     int MAX_DOCS=100;
-     Integer cur_num_docs=0;
+    Integer cur_num_docs=0;
 
     public static void setNotVisited(String link)
     {
@@ -58,13 +58,12 @@ public class Spider implements Runnable
                         try {
                            notVisited.wait();
                             link = notVisited.poll();
-
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }
                     */
-                    //notVisited.notifyAll();
+            //notVisited.notifyAll();
 
 
 
@@ -80,9 +79,9 @@ public class Spider implements Runnable
             {
                 String href = e.attr("href");
                 href = postProLink(href, link);
-                    if (!visited.contains(href) && !notVisited.contains(href)) {
-                        notVisited.add(href);
-                    }
+                if (!visited.contains(href) && !notVisited.contains(href)) {
+                    notVisited.add(href);
+                }
 
             }
             synchronized (cur_num_docs) {
@@ -90,7 +89,7 @@ public class Spider implements Runnable
             }
             System.out.println(Thread.currentThread()+" : "+ link+ " Num docs= "+ cur_num_docs );
             //todo out document of link
-                    visited.add(link);
+            visited.add(link);
 
         }
     }
@@ -128,30 +127,30 @@ public class Spider implements Runnable
         {
             URL url=new URL(base);
             if(link!=null)
-            if (link.startsWith("./"))
-            {
-                link=link.substring(2,link.length());
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
-            else if(link.startsWith("#"))   //better remove this
-            {
+                if (link.startsWith("./"))
+                {
+                    link=link.substring(2,link.length());
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
+                else if(link.startsWith("#"))   //better remove this
+                {
 
-                link=base+link;
-                link=link.substring(0,link.length()-1);
-            }
-            else if(link.startsWith("/"))
-            {
-                link=link.substring(1,link.length());
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
-            else if(link.startsWith("javascript:"))
-            {
-                link=null;
-            }
-            else if(link.startsWith("../"))
-            {
-                link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
-            }
+                    link=base+link;
+                    link=link.substring(0,link.length()-1);
+                }
+                else if(link.startsWith("/"))
+                {
+                    link=link.substring(1,link.length());
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
+                else if(link.startsWith("javascript:"))
+                {
+                    link=null;
+                }
+                else if(link.startsWith("../"))
+                {
+                    link= url.getProtocol()+"://"+ url.getAuthority()+ removeName(url.getPath())+link;
+                }
             return link;
         }
         catch (Exception e)
