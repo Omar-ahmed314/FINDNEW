@@ -18,7 +18,7 @@ public class dbSpider implements Runnable
     final Set<String> visited=new HashSet<String>();
     static final Queue<String> notVisited=new LinkedList<String>();
     public static final Database db=new Database();
-    int MAX_DOCS=1000;
+    int MAX_DOCS=5000;
     Integer cur_num_docs=0;
     FileWriter out;
 
@@ -73,8 +73,8 @@ public class dbSpider implements Runnable
 
             }
             if(link!=null) db.dbEnqueue("visited",link);
-*/
-
+*/          String[] subLinks=new String[100];
+            int count=hasRobot(subLinks,100,link);
             try {
                 Document doc = request(link);
                 if (doc != null) {
@@ -82,10 +82,22 @@ public class dbSpider implements Runnable
                         String nextLink = linkElement.absUrl("href");
                         //synchronized (db)
                         //{
-                            if (!db.exists("visited", nextLink) && !db.exists("not_visited", nextLink)&&nextLink!=null) {
+                        for(int i=0;i<count;i++)
+                        {
+                            if (new URL(nextLink).getHost().equals(new URL(subLinks[i]).getHost()))
+                            {
+                                if(nextLink.contains(subLinks[i]))
+                                {
+                                    System.out.println("Robots.txt disallows crawling this link");
+                                    nextLink=null;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!db.exists("visited", nextLink) && !db.exists("not_visited", nextLink)&&nextLink!=null) {
                                 //System.out.println(Thread.currentThread()+ ": Received webpage at "+ nextLink);
                                 db.dbEnqueue("not_visited", nextLink);
-                            }
+                        }
                         //}
                     }
                 }
@@ -118,7 +130,9 @@ public class dbSpider implements Runnable
             Document doc=con.get();
             if(con.response().statusCode()==200)
             {
-                out.write(url+"\n");
+                synchronized (db) {
+                    out.write(url + "\n");
+                }
                 try {
                     out.flush();
                 }
@@ -138,6 +152,51 @@ public class dbSpider implements Runnable
             //ioe.printStackTrace();
             return null;
         }
+    }
+
+    int hasRobot(String[] subLinks,int size,String link)
+    {
+        if(link==null) return -1;
+        URL url;
+        try {
+            url = new URL(link);
+        }catch(Exception e){e.printStackTrace();url=null;}
+
+        String robot = url.getProtocol()+"://"+url.getHost()+"/robots.txt";
+        //Connection con = Jsoup.connect(robot);
+        //Connection s =con.requestBody(robot);
+        //System.out.println(s);
+        //return -1;
+        //if(!link.endsWith(".com")&&!link.endsWith("/")) return -1;
+        //if(link.endsWith("/")) link=link.substring(0,link.length()-1);
+        boolean res=true;
+        int count=0;
+        try(BufferedReader in = new BufferedReader(new InputStreamReader(new URL(robot).openStream()))) {
+            String line = null;
+            while((line = in.readLine()) != null) {
+                if(line.startsWith("User-agent: *"))
+                {
+                    line=in.readLine();
+                    while(line!=null&&!line.startsWith("User-agent:"))
+                    {
+                        while(line.startsWith("Disallow: /"))
+                        {
+                            subLinks[count++]=url.getProtocol()+"://"+url.getHost()+line.substring(10,line.length());
+                            //System.out.println(subLinks[count-1]);
+                            line=in.readLine();
+                        }
+                        line=in.readLine();
+
+                    }
+                }
+               // else if(Disallow :/
+
+            }
+        } catch (IOException e) {
+            res=false;
+            e.printStackTrace();
+        }
+        return count;
     }
 
     @Override
